@@ -1,0 +1,77 @@
+{
+  "name": "@tobes31415/storage",
+  "version": "1.0.0",
+  "description": "Wrappers for local/session/cookie/memory storage supporting namespacing, and automatic serialization of complex objects including graphs, regexp and dates",
+  "main": "lib/storage-commonjs.min.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    "storage": {
+      "import": "./lib/storage.js"
+    }
+  },
+  "scripts": {
+    "test": "run-s build:compile test:jest",
+    "test:jest": "jest bin --coverage",
+    "build": "run-s pre-clean:* post-clean:* test build:copy:* apidocs bundle-cjs bundle-esm build:remove-tests post-clean:*",
+    "build:compile": "tsc --declaration",
+    "build:fix-imports": "fix-tsc-esnext-imports lib",
+    "build:copy:flow": "cpy \"bin/**/!(*.test){*.js,*.d.ts}\" \"flow\"",
+    "build:copy:dts": "cpy \"bin/**/*.d.ts\" \"lib\"",
+    "build:remove-tests": "del-cli lib/*test*",
+    "prettier": "prettier --write \"src/**/*.ts\"",
+    "bundle-cjs": "esbuild src/index.ts --external:rxjs --minify --format=cjs --bundle --outfile=lib/storage-commonjs.min.js",
+    "bundle-esm": "esbuild src/*.ts --format=esm --outdir=lib",
+    "flowgen": "run-p flowgen:*",
+    "flowgen:storage": "flowgen flow/storage.d.ts -o lib/storage-commonjs.min.js.flow",
+    "flowgen:index": "flowgen flow/index.d.ts -o lib/index.js.flow",
+    "apidocs": "run-s apidocs:clean:* apidocs:typedoc apidocs:copy",
+    "apidocs:clean:docs": "del-cli docs",
+    "apidocs:clean:docsbin": "del-cli docs_bin",
+    "apidocs:typedoc": "typedoc --out docs_bin src/index.ts --excludePrivate --excludeExternals ",
+    "apidocs:copy": "cpy docs_bin/modules.md docs",
+    "pre-clean:docs": "del-cli docs",
+    "pre-clean:lib": "del-cli lib",
+    "post-clean:bin": "del-cli bin",
+    "post-clean:docs_bin": "del-cli docs_bin",
+    "post-clean:flow": "del-cli flow"
+  },
+  "keywords": [
+    "localstorage",
+    "local storage",
+    "sessionstorage",
+    "session storage",
+    "cookies",
+    "storage"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tobes31415/storage"
+  },
+  "author": "Jake Tober",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/plugin-proposal-export-default-from": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "@types/jest": "^27.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "babel-jest": "^27.0.5",
+    "cpy-cli": "^3.1.1",
+    "del-cli": "^3.0.1",
+    "esbuild": "^0.8.33",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "fix-tsc-esnext-imports": "^1.0.5",
+    "flowgen": "^1.13.0",
+    "jest": "^27.0.6",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "replace": "^1.2.0",
+    "typedoc": "^0.21.5",
+    "typedoc-plugin-markdown": "^3.4.1",
+    "typescript": "~4.0.2",
+    "uglify-es": "^3.3.9"
+  }
+}
